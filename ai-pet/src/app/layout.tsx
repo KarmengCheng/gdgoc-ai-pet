@@ -1,6 +1,14 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
+import { Google_Sans } from "next/font/google"
 import "./globals.css"
+
+const googleSans = Google_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-google-sans",
+  adjustFontFallback: false,
+})
 
 export const metadata: Metadata = {
   title: "Pocket Pal | GDGoC AI Pet",
@@ -10,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className={`${googleSans.variable} ${googleSans.className} antialiased`}>{children}</body>
     </html>
   )
 }

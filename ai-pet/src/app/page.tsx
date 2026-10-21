@@ -69,7 +69,7 @@ function loadPet(): Pet {
 function Stat({ label, value }: { label: string, value: number }) {
   return (
     <div>
-      <div className="mb-2 flex justify-between text-sm text-slate-300">
+      <div className="mb-1 flex justify-between text-xs text-slate-300">
         <span>{label}</span>
         <span>{value}/100</span>
       </div>
@@ -219,33 +219,41 @@ function PetApp() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-5 py-10 text-slate-100">
-      <div className="mx-auto max-w-5xl">
-        <header className="mb-8">
-          <p className="mb-2 text-sm uppercase tracking-[0.25em] text-violet-300">
+    <main className="min-h-dvh bg-slate-950 p-3 text-slate-100 md:h-dvh md:overflow-hidden">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 md:h-full md:min-h-0">
+        <header className="shrink-0">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-violet-300">
             Beyond the Chatbot: Building AI Agents with Google Genkit
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight">Pocket Pal</h1>
-          <p className="mt-3 text-slate-400">
-            A little friend with a personality of its own.
-          </p>
+          <div className="mt-1 flex items-baseline justify-between gap-4">
+            <h1 className="text-3xl font-semibold tracking-tight">Pocket Pal</h1>
+            <p className="hidden text-sm text-slate-400 sm:block">
+              A little friend with a personality of its own.
+            </p>
+          </div>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-[360px_1fr]">
-          <section className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">{pet.name || "Your pet"}</h2>
-              <span className="rounded-full bg-violet-400/15 px-3 py-1 text-sm capitalize text-violet-200">
-                {mood}
-              </span>
+        <div className="grid gap-3 md:min-h-0 md:flex-1 md:grid-cols-[1.05fr_1fr]">
+          <section className="flex flex-col gap-2 rounded-3xl border border-slate-800 bg-slate-900 p-3 md:min-h-0">
+            <div className="shrink-0">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="truncate text-2xl font-semibold">{pet.name || "Your pet"}</h2>
+                <span className="shrink-0 rounded-full bg-violet-400/15 px-3 py-1 text-sm capitalize text-violet-200">
+                  {mood}
+                </span>
+              </div>
+              <p aria-live="polite" className="mt-1 min-h-4 text-xs leading-4 text-violet-200">{notice}</p>
             </div>
 
-            <div className="my-8 flex h-48 items-center justify-center">
+            <div className="grid min-h-[176px] flex-1 grid-cols-[minmax(0,1fr)_104px] items-center gap-3">
+              <div className="flex min-w-0 flex-col items-center justify-center">
+                <div className="relative flex h-44 w-full items-center justify-center">
+                  <div aria-hidden="true" className="absolute h-44 w-44 rounded-full bg-violet-500/15 blur-2xl" />
               <svg
                 viewBox="0 0 220 220"
                 role="img"
                 aria-label={`${pet.name || "Your pet"} looks ${mood}`}
-                className="h-44 w-44 drop-shadow-xl motion-safe:animate-bounce"
+                className="relative h-44 w-44 max-w-full drop-shadow-xl motion-safe:animate-bounce"
               >
                 <path
                   d="M45 95 L38 30 L92 65 M128 65 L182 30 L175 95"
@@ -282,78 +290,73 @@ function PetApp() {
                 <ellipse cx="86" cy="190" rx="19" ry="10" fill="#c4b5fd" />
                 <ellipse cx="134" cy="190" rx="19" ry="10" fill="#c4b5fd" />
               </svg>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <Stat label="Happiness" value={pet.happiness} />
+                <Stat label="Hunger" value={pet.hunger} />
+                <Stat label="Energy" value={pet.energy} />
+                <p className="text-[11px] leading-4 text-slate-400">
+                  Higher hunger means a hungrier pet.
+                </p>
+              </div>
             </div>
 
-            <p aria-live="polite" className="mb-6 min-h-10 text-center text-sm text-violet-200">
-              {notice}
-            </p>
-
-            <div className="space-y-4">
-              <Stat label="Happiness" value={pet.happiness} />
-              <Stat label="Hunger" value={pet.hunger} />
-              <Stat label="Energy" value={pet.energy} />
-            </div>
-            <p className="mt-3 text-xs text-slate-400">Higher hunger means a hungrier pet.</p>
-
-            <div className="mt-6 grid grid-cols-3 gap-2">
+            <div className="grid shrink-0 grid-cols-3 gap-2">
               {(["feed", "play", "rest"] as const).map((action) => (
                 <button
                   key={action}
                   onClick={() => care(action)}
                   disabled={loading}
-                  className="rounded-xl bg-violet-500 px-3 py-3 capitalize transition hover:bg-violet-400 disabled:opacity-50"
+                  className="rounded-xl bg-violet-500 px-3 py-2.5 text-sm capitalize transition hover:bg-violet-400 disabled:opacity-50"
                 >
                   {action}
                 </button>
               ))}
             </div>
 
-            <div className="mt-7 space-y-4 border-t border-slate-800 pt-6">
-              <label className="block text-sm text-slate-300">
-                Pet name
-                <input
-                  value={pet.name}
-                  maxLength={30}
-                  disabled={loading}
-                  onChange={(event) => setPet({ ...pet, name: event.target.value })}
-                  className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 text-white outline-none focus:border-violet-400"
-                />
-              </label>
-              <label className="block text-sm text-slate-300">
-                Personality
-                <textarea
-                  value={pet.personality}
-                  maxLength={200}
-                  rows={3}
-                  disabled={loading}
-                  onChange={(event) => setPet({ ...pet, personality: event.target.value })}
-                  className="mt-2 w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-3 text-white outline-none focus:border-violet-400"
-                />
-              </label>
-              <p className="text-xs text-slate-400">
-                Pet settings and stats are saved in this browser. Chat resets on refresh.
-              </p>
+            <div className="shrink-0 border-t border-slate-800 pt-2">
+              <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-3">
+                <label className="block min-w-0 text-xs text-slate-300">
+                  Pet name
+                  <input
+                    value={pet.name}
+                    maxLength={30}
+                    disabled={loading}
+                    onChange={(event) => setPet({ ...pet, name: event.target.value })}
+                    className="mt-1 h-14 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 text-sm text-white outline-none focus:border-violet-400"
+                  />
+                </label>
+                <label className="block min-w-0 text-xs text-slate-300">
+                  Personality
+                  <textarea
+                    value={pet.personality}
+                    maxLength={200}
+                    rows={2}
+                    disabled={loading}
+                    onChange={(event) => setPet({ ...pet, personality: event.target.value })}
+                    className="mt-1 block h-14 w-full resize-none rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm leading-5 text-white outline-none focus:border-violet-400"
+                  />
+                </label>
+              </div>
             </div>
           </section>
 
-          <section className="flex min-h-[620px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900">
-            <div className="border-b border-slate-800 p-6">
+          <section className="flex h-[70dvh] min-h-[360px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 md:h-auto md:min-h-0">
+            <div className="shrink-0 border-b border-slate-800 p-4">
               <h2 className="text-xl font-semibold">Talk to your pal</h2>
-              <p className="mt-1 text-sm text-slate-400">
-                Try asking how your pet feels after playing or resting.
-              </p>
+              <p className="mt-1 text-sm text-slate-400">Ask how your pet feels, or tell it about your day.</p>
             </div>
-
             <div
               ref={chatRef}
               role="log"
               aria-label="Conversation with your pet"
               aria-live="polite"
-              className="h-[440px] flex-1 space-y-4 overflow-y-auto p-6"
+              className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4"
             >
               {messages.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-slate-700 p-6 text-slate-400">
-                  Say hello, ask for a joke, or tell your pet about your day.
+                <div className="rounded-2xl border border-dashed border-slate-700 p-4 text-sm leading-relaxed text-slate-400">
+                  Your pal is ready. Type a message below to start chatting.
                 </div>
               )}
               {messages.map((message, index) => (
@@ -368,21 +371,14 @@ function PetApp() {
                   <p className="mb-1 text-xs opacity-60">
                     {message.role === "user" ? "You" : pet.name || "Your pet"}
                   </p>
-                  <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
-                    {message.text}
-                  </p>
+                  <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">{message.text}</p>
                 </div>
               ))}
-              {loading && (
-                <p className="text-sm text-violet-300">Your pet is thinking...</p>
-              )}
+              {loading && <p className="text-sm text-violet-300">Your pet is thinking...</p>}
             </div>
-
-            <div className="border-t border-slate-800 p-5">
-              {error && (
-                <p role="alert" className="mb-3 text-sm text-rose-300">{error}</p>
-              )}
-              <form onSubmit={sendMessage} className="flex gap-3">
+            <div className="shrink-0 border-t border-slate-800 p-3">
+              {error && <p role="alert" className="mb-2 max-h-16 overflow-y-auto text-sm text-rose-300">{error}</p>}
+              <form onSubmit={sendMessage} className="flex gap-2">
                 <input
                   aria-label="Message your pet"
                   value={input}
@@ -390,12 +386,12 @@ function PetApp() {
                   disabled={loading}
                   onChange={(event) => setInput(event.target.value)}
                   placeholder="Say something to your pet..."
-                  className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-violet-400"
+                  className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm outline-none focus:border-violet-400"
                 />
                 <button
                   type="submit"
                   disabled={loading || !input.trim()}
-                  className="rounded-xl bg-violet-500 px-5 py-3 transition hover:bg-violet-400 disabled:opacity-40"
+                  className="shrink-0 rounded-xl bg-violet-500 px-4 py-3 text-sm transition hover:bg-violet-400 disabled:opacity-40"
                 >
                   {loading ? "Wait..." : "Send"}
                 </button>
@@ -407,6 +403,7 @@ function PetApp() {
     </main>
   )
 }
+
 
 export default function Home() {
   const ready = useSyncExternalStore(subscribe, () => true, () => false)
