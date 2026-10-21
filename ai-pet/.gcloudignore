@@ -1,0 +1,5 @@
+.gcloudignore
+.git
+node_modules
+.next
+.env*
